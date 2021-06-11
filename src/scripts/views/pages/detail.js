@@ -1,13 +1,20 @@
+import UrlParser from '../../routes/url-parser'
+import TheMovieDbSource from '../../data/themoviedb-source'
+import { createMovieDetailTemplate } from '../templates/template-creator'
+
 const Detail = {
-  async render() {
+  async render () {
     return `
-      <h2>Detail Page</h2>
-    `;
+      <div id="movie" class="movie"></div>
+    `
   },
- 
-  async afterRender() {
-    // Fungsi ini akan dipanggil setelah render()
-  },
-};
- 
-export default Detail;
+  async afterRender () {
+    const url = UrlParser.parseActiveUrlWithoutCombiner()
+    const movies = await TheMovieDbSource.detailMovie(url.id)
+    const moviesContainer = document.querySelector('#movies')
+    movies.forEach((movie) => {
+      moviesContainer.innerHTML += createMovieDetailTemplate(movie)
+    })
+  }
+}
+export default Detail
